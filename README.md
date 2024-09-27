@@ -1,3 +1,2 @@
 
-The paypal is working in the sandbox environment
-For working must have the sandbox accounts
+The paypal is is not connect to sandbox anymore
