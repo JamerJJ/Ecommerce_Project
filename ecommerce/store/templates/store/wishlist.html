@@ -1,0 +1,47 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Wishlist</h1>
+    <div class="list-group ">
+        {% for product in wishlist.products.all %}
+            <div class="list-group-item d-flex justify-content-between align-items-center" style="background-color: #f7f4ea;">
+                <div>
+                    <a href="{% url 'product_detail' product_id=product.id %}">
+                        <img class="smaller-image-gallery" src="{{product.image.url}}">
+                    </a>
+                </div>
+                <div>
+                    <a href="{% url 'product_detail' product_id=product.id %}">
+                        <h5 class="mb-1">{{ product.name }}</h5>
+                    </a>
+                </div>
+                
+                <p class="mb-1">Price: {{ product.price }}</p>
+                <a href="{% url 'removeFromWishlist' product.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
+
+            </div>
+        {% endfor %}
+    </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+    <script>
+        window.onpageshow = function (event) {
+            if (event.persisted){
+                window.location.reload();
+            }
+        };
+    </script>
+
+
+{% endblock content %}

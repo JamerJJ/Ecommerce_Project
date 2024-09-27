@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <title>Main Page</title>
+    
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+
+
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+
+        function getToken(name){
+            var cookieValue = null;
+            if(document.cookie && document.cookie !== ''){
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++){
+                    var cookie = cookies[i].trim();
+                    if(cookie.substring(0, name.length + 1)=== (name + '=')){
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getToken('csrftoken');
+        console.log('CSRFTOKEN: ', csrftoken)
+
+        function getCookie(name){
+            //split cookie string and get all individual name=value pairs in an array
+            var cookieArr = document.cookie.split(";");
+
+            //loop through the array
+            for(var i = 0; i < cookieArr.length; i++){
+                var cookiePair = cookieArr[i].split("=");
+                //removing whitespaces at the beginning of the cookie name and compare it with the given string
+                if(name == cookiePair[0].trim()){
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            //return null if not found
+            return null;
+        }
+        var cart = JSON.parse(getCookie('cart'))
+        
+        if(cart == undefined){
+            cart = {}
+            console.log('Cart created')
+            document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        }
+
+        console.log('Cart: ', cart)
+
+
+
+    </script>
+
+    
+
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+          <a class="navbar-brand" href="{% url 'store' %}">
+                <img src="{% static 'images/logonav.png' %}" alt="JJ Store Logo" width="60" height="50">
+          </a>
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'store' %}"> Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+
+                <form id="categoryForm" class="d-flex" method="GET" action="{% url 'filter_category' %}">
+                    <select id="categorySelect" class="form-control mr-sm-1 custom-dropdown" name="category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+            </li>
+            
+          </ul>
+        <div class="form-inline my-2 my-lg-0">
+            
+            {% if request.user.is_authenticated %}
+                <span>Hello, {{request.user}}</span>
+                <a href="{% url 'logout' %}">
+                    <img id="cart-icon" src="{% static 'images/logout.png' %}">
+                </a>
+            {% else %}
+                <a href="{% url 'login' %} ">
+                    <img id="cart-icon" src="{% static 'images/login.png' %}">
+                </a>
+            {% endif %}
+
+            
+            <a href="{% url 'wishlist' %}">
+                <img id="cart-icon" src="{% static 'images/emptyHeart.png' %}">
+            </a>
+            
+
+
+            <a href="{% url 'cart' %}">
+                <img id="cart-icon" src="{% static 'images/shopping-cart.png' %}">
+            </a>
+            
+
+            <p id="cart-total">{{cartItems}}</p>
+            
+        </div>
+
+        </div>
+      </nav>
+
+
+    <div class="container">
+        <br>
+        {% block content %}
+
+        
+        {% endblock content %}
+    </div>
+
+    <br>
+    <br>
+
+    <section id="footer">
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 footer-box">
+                    <img class="smaller-image-logo" src="{% static 'images/logotransparent.png' %}">
+                    <br>
+                    <br>
+                </div>
+                <div class="col-md-4 footer-box">
+                    <p><b>USEFUL LINKS</b></p>
+                    <a href="{% url 'register' %}"><p>Register</p></a>
+                    <a href="{% url 'login' %}"><p>Login</p></a>
+                    <a href="{% url 'store' %}"><p>Home</p></a>
+                </div>
+                <div class="col-md-4 footer-box">
+                    <p><b>GET IN TOUCH</b></p>
+                    <p>33, Fake Street, Dublin</p>
+                    <p>jjinfo@hotmail.com</p>
+                    <p>+353 (083) 123 4567</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <section id="copyright">
+            <!-- Copyright -->
+            <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+                © 2024 Copyright:
+                <a class="text-reset fw-bold" href="{% url 'store' %}">Jubanski</a>
+            </div>
+        </section>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

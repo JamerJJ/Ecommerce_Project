@@ -1,0 +1,37 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+
+    <div class="row">
+    {% for product in products %}
+        <div class="col-lg-4">
+            <img class="thumbnail" src="{{product.image.url}}">
+            <div class="box-element product">
+                <h6><strong>{{product.name}}</strong></h6>
+                <hr>
+
+                <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-cart btn-custom-color2">Add to Cart</button>
+                <a class="btn btn-outline-success btn-custom-color" href="{% url 'product_detail' product_id=product.id %}">View</a>
+                <h4 style="display: inline-block"><strong>€{{product.price|floatformat:2}}</strong></h4>
+                
+                <a href="{% url 'addToWishlist' product.id %}">
+                    <img id="cart-icon" src="{% static 'images/emptyHeart.png' %}">
+                </a>
+
+            </div>
+        </div>
+
+    {% endfor %}
+    </div>
+
+    <script>
+        window.onpageshow = function (event) {
+            if (event.persisted){
+                window.location.reload();
+            }
+        };
+    </script>
+
+
+{% endblock content %}
