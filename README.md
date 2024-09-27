@@ -1,2 +1,2 @@
 
-The paypal is is not connect to sandbox anymore
+The paypal is not connect to sandbox anymore
